@@ -29,7 +29,7 @@ Dacă un video depășește 25 MB, folosește Cloudflare Stream/R2 sau lasă lin
 
 ## Înainte să publici
 
-- [ ] Verifică emailul din `src/content.ts` (`site.email`): acum e `adrainscriptpov@gmail.com`, exact cum a fost scris
+- [ ] Verifică emailul din `src/content.ts` (`site.email`): acum e `adrianscriptpov@gmail.com`, exact cum a fost scris
 - [ ] Verifică prețurile și ce include fiecare pachet (sunt orientative)
 - [ ] Verifică „5 to 7 days” din `steps` și „Best value” din pachete
 - [ ] Pune link-ul direct al fiecărui reel în `instagram`

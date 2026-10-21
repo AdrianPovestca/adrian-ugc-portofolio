@@ -6,8 +6,8 @@
 export const site = {
   name: 'adrian.script',
   fullName: 'Adrian Povestca',
-  // VERIFICĂ: e scris exact cum l-ai trimis (adrainscriptpov). Dacă e greșeală de scriere, corectează aici.
-  email: 'adrainscriptpov@gmail.com',
+  // VERIFICĂ: e scris exact cum l-ai trimis (adrianscriptpov). Dacă e greșeală de scriere, corectează aici.
+  email: 'adrianscriptpov@gmail.com',
   instagram: 'https://www.instagram.com/adrian_script/',
   instagramReels: 'https://www.instagram.com/adrian_script/reels/',
 }
