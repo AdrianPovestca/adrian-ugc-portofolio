@@ -1,0 +1,276 @@
+import { useState } from 'react'
+import { ArrowDown, Mail } from 'lucide-react'
+import CountUp from './components/CountUp'
+import PlayableCard from './components/PlayableCard'
+import ReelCarousel from './components/ReelCarousel'
+import Reveal from './components/Reveal'
+import { addons, brandWork, formats, packs, reels, site, steps } from './content'
+import { useActiveSection, useScrolled } from './hooks'
+
+const SECTION_IDS = ['top', 'reels', 'brand-work', 'formats', 'packages', 'process', 'about', 'contact']
+
+const mailto = (subject: string, body = '') =>
+  `mailto:${site.email}?subject=${encodeURIComponent(subject)}${body ? `&body=${encodeURIComponent(body)}` : ''}`
+
+const briefTemplate = `Hi Adrian,
+
+Product / link:
+Who it's for:
+What we want people to do:
+Rough deadline:
+
+`
+
+function InstagramIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <rect x="3" y="3" width="18" height="18" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.5" cy="6.5" r="0.6" fill="currentColor" />
+    </svg>
+  )
+}
+
+function App() {
+  const [playing, setPlaying] = useState<string | null>(null)
+  const scrolled = useScrolled()
+  const active = useActiveSection(SECTION_IDS)
+  const hero = reels[0]
+  const second = reels[1]
+
+  return (
+    <main>
+      <header className="site-header" data-scrolled={scrolled}>
+        <div className="nav wrap">
+          <a className="wordmark" href="#top">
+            adrian<span>.</span>script
+          </a>
+          <nav aria-label="Main">
+            <a href="#reels" aria-current={active === 'reels' ? 'true' : undefined}>Reels</a>
+            <a href="#brand-work" aria-current={active === 'brand-work' ? 'true' : undefined}>Brand work</a>
+            <a href="#packages" aria-current={active === 'packages' ? 'true' : undefined}>Packages</a>
+            <a href="#process" aria-current={active === 'process' ? 'true' : undefined}>How it works</a>
+            <a className="nav-cta" href="#contact">Work with me</a>
+          </nav>
+        </div>
+      </header>
+
+      <section className="hero wrap" id="top">
+        <div className="hero-copy">
+          <p className="hero-line">
+            <span className="hero-err">error</span> line 180: you’ve been here too.
+          </p>
+          <h1>Videos people send with “same.”</h1>
+          <p className="hero-text">
+            I’m Adrian. I make short, cinematic videos for apps, AI tools and gadgets: a hook that stops the scroll,
+            a moment everyone recognises, and your product right in the middle of it.
+          </p>
+          <div className="hero-actions">
+            <a className="btn btn-primary" href="#reels">
+              Watch the reels <ArrowDown size={16} />
+            </a>
+            <a className="btn-text" href="#packages">See packages</a>
+          </div>
+          <dl className="hero-proof">
+            <div>
+              <dt><CountUp value={hero.views} delay={900} /></dt>
+              <dd>views on “{hero.title}”</dd>
+            </div>
+            <div>
+              <dt><CountUp value={second.views} delay={1050} /></dt>
+              <dd>views on “{second.title}”</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div className="hero-visual">
+          <div className="phone">
+            {hero.video ? (
+              <video src={hero.video} poster={hero.poster} autoPlay muted loop playsInline />
+            ) : (
+              <img src={hero.poster} alt="Adrian in the video “Error in line 180”" />
+            )}
+          </div>
+          <div className="hero-chip">
+            <strong>{hero.views}</strong> views on one reel
+          </div>
+        </div>
+      </section>
+
+      <section className="section" id="reels">
+        <div className="wrap">
+          <Reveal className="section-head">
+            <h2>Reels</h2>
+            <p>Things I’ve made. Tap one to watch it right here.</p>
+          </Reveal>
+          <Reveal delay={120}>
+            <ReelCarousel playing={playing} onPlay={setPlaying} />
+          </Reveal>
+          <Reveal as="p" className="fine" delay={200}>
+            View counts are from my Instagram, as of October 2026. They keep moving.{' '}
+            <a href={site.instagram} target="_blank" rel="noreferrer">All of them are on my profile.</a>
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="section section-alt" id="brand-work">
+        <div className="wrap">
+          <Reveal className="section-head">
+            <h2>Made with {brandWork.client}</h2>
+            <p>
+              {brandWork.text}{' '}
+              <a href={brandWork.clientLink} target="_blank" rel="noreferrer">Artisan on Instagram</a>
+            </p>
+          </Reveal>
+          <ul className="brand-grid">
+            {brandWork.videos.map((v, i) => (
+              <Reveal as="li" delay={i * 110} key={v.id}>
+                <PlayableCard
+                  item={v}
+                  active={playing === v.id}
+                  onToggle={() => setPlaying((p) => (p === v.id ? null : v.id))}
+                />
+              </Reveal>
+            ))}
+          </ul>
+          <Reveal className="featuring">
+            <span>{brandWork.featuringLabel}</span>
+            <ul>
+              {brandWork.featuring.map((b) => (
+                <li key={b}>{b}</li>
+              ))}
+            </ul>
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="section" id="formats">
+        <div className="wrap split">
+          <Reveal className="split-intro">
+            <h2>What I can make for you</h2>
+            <p>
+              I film the moment people already live through and put your product inside it. It never feels like an ad,
+              and that’s the reason people watch to the end.
+            </p>
+          </Reveal>
+          <ul className="format-list">
+            {formats.map((f, i) => (
+              <Reveal as="li" delay={i * 90} key={f.title}>
+                <h3>{f.title}</h3>
+                <p>{f.text}</p>
+              </Reveal>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <section className="section section-alt" id="packages">
+        <div className="wrap">
+          <Reveal className="section-head">
+            <h2>Packages</h2>
+            <p>Prices in USD. Not sure which one fits? Tell me about the product and I’ll point you to one.</p>
+          </Reveal>
+          <div className="packs">
+            {packs.map((p, i) => (
+              <Reveal as="article" className="pack" delay={i * 130} data-featured={p.featured ? 'true' : undefined} key={p.name}>
+                {p.featured && <span className="pack-flag">Best value</span>}
+                <h3>{p.name}</h3>
+                <p className="pack-tag">{p.bestFor}</p>
+                <p className="pack-price">
+                  <strong>{p.price}</strong> <span>{p.unit}</span>
+                </p>
+                <p className="pack-per">
+                  {p.perVideo}
+                  {p.saving && <em>{p.saving}</em>}
+                </p>
+                <ul>
+                  {p.includes.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+                <a className="btn btn-primary" href={mailto(`UGC: ${p.name}`, briefTemplate)}>
+                  Ask about this
+                </a>
+              </Reveal>
+            ))}
+          </div>
+
+          <Reveal className="addons">
+            <h3>Add-ons</h3>
+            <dl>
+              {addons.map((a) => (
+                <div key={a.name}>
+                  <dt>{a.name}</dt>
+                  <dd>{a.price}</dd>
+                </div>
+              ))}
+            </dl>
+            <p className="fine">
+              Every package covers organic posting on your own channels. Running the video as an ad is a separate
+              license, so you only pay for what you use.
+            </p>
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="section" id="process">
+        <div className="wrap split">
+          <Reveal className="split-intro">
+            <h2>How it works</h2>
+            <p>Four steps, and you see the idea before I film it.</p>
+          </Reveal>
+          <ol className="steps">
+            {steps.map((st, i) => (
+              <Reveal as="li" delay={i * 110} key={st.title}>
+                <h3>{st.title}</h3>
+                <p>{st.text}</p>
+              </Reveal>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section className="section about" id="about">
+        <div className="wrap about-inner">
+          <Reveal as="h2">Hi, I’m Adrian.</Reveal>
+          <Reveal delay={140}>
+            <p>
+              I build things myself, so when I demo your tool I actually understand what it’s doing. Then I turn that
+              into the kind of video I’d stop scrolling for: honest, a bit funny, and about a problem someone really has.
+            </p>
+            <p>
+              I make content that says “this is me” and “I have this exact problem.” The product earns its place in
+              the story instead of interrupting it.
+            </p>
+            <a className="btn-text" href={site.instagram} target="_blank" rel="noreferrer">
+              <InstagramIcon /> Follow along on Instagram
+            </a>
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="contact" id="contact">
+        <div className="wrap">
+          <Reveal as="h2">Got a product that deserves a better video than an ad?</Reveal>
+          <Reveal as="p" delay={120}>Send me the link and a sentence about who it’s for. I’ll reply with a couple of ideas.</Reveal>
+          <Reveal delay={240}>
+            <a className="btn btn-primary btn-big" href={mailto('UGC project', briefTemplate)}>
+              <Mail size={18} /> {site.email}
+            </a>
+          </Reveal>
+        </div>
+      </section>
+
+      <footer className="footer">
+        <div className="wrap footer-inner">
+          <a className="wordmark" href="#top">
+            adrian<span>.</span>script
+          </a>
+          <span>© {new Date().getFullYear()} {site.fullName}</span>
+        </div>
+      </footer>
+    </main>
+  )
+}
+
+export default App
