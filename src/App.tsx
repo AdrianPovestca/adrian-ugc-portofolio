@@ -4,7 +4,7 @@ import CountUp from './components/CountUp'
 import PlayableCard from './components/PlayableCard'
 import ReelCarousel from './components/ReelCarousel'
 import Reveal from './components/Reveal'
-import { addons, brandWork, formats, packs, reels, site, steps } from './content'
+import { addons, brandWork, formats, foundingSpots, packs, reels, site, steps } from './content'
 import { useActiveSection, useScrolled } from './hooks'
 
 const SECTION_IDS = ['top', 'reels', 'brand-work', 'formats', 'packages', 'process', 'about', 'contact']
@@ -33,8 +33,23 @@ function InstagramIcon() {
 
 function App() {
   const [playing, setPlaying] = useState<string | null>(null)
+  const [soundOn, setSoundOn] = useState(false)
+
+  // La finalul unui video pornește următorul din aceeași secțiune; după ultimul, o ia de la început.
+  const advance = (id: string): string | null => {
+    const lists = [reels, brandWork.videos].map((l) => l.filter((i) => i.video))
+    const list = lists.find((l) => l.some((i) => i.id === id))
+    if (!list) {
+      setPlaying(null)
+      return null
+    }
+    const next = list[(list.findIndex((i) => i.id === id) + 1) % list.length]
+    setPlaying(next.id)
+    return next.id
+  }
   const scrolled = useScrolled()
   const active = useActiveSection(SECTION_IDS)
+  const founding = foundingSpots > 0
   const hero = reels[0]
   const second = reels[1]
 
@@ -86,7 +101,20 @@ function App() {
         <div className="hero-visual">
           <div className="phone">
             {hero.video ? (
-              <video src={hero.video} poster={hero.poster} autoPlay muted loop playsInline />
+              <video
+                ref={(v) => {
+                  if (v) {
+                    v.defaultMuted = true
+                    v.muted = true
+                  }
+                }}
+                src={hero.video}
+                poster={hero.poster}
+                autoPlay
+                muted
+                loop
+                playsInline
+              />
             ) : (
               <img src={hero.poster} alt="Adrian in the video “Error in line 180”" />
             )}
@@ -104,7 +132,13 @@ function App() {
             <p>Things I’ve made. Tap one to watch it right here.</p>
           </Reveal>
           <Reveal delay={120}>
-            <ReelCarousel playing={playing} onPlay={setPlaying} />
+            <ReelCarousel
+              playing={playing}
+              onPlay={setPlaying}
+              onEnded={advance}
+              muted={!soundOn}
+              onToggleSound={() => setSoundOn((s) => !s)}
+            />
           </Reveal>
           <Reveal as="p" className="fine" delay={200}>
             View counts are from my Instagram, as of October 2026. They keep moving.{' '}
@@ -129,6 +163,9 @@ function App() {
                   item={v}
                   active={playing === v.id}
                   onToggle={() => setPlaying((p) => (p === v.id ? null : v.id))}
+                  onEnded={() => advance(v.id)}
+                  muted={!soundOn}
+                  onToggleSound={() => setSoundOn((s) => !s)}
                 />
               </Reveal>
             ))}
@@ -171,29 +208,47 @@ function App() {
             <p>Prices in USD. Not sure which one fits? Tell me about the product and I’ll point you to one.</p>
           </Reveal>
           <div className="packs">
-            {packs.map((p, i) => (
-              <Reveal as="article" className="pack" delay={i * 130} data-featured={p.featured ? 'true' : undefined} key={p.name}>
-                {p.featured && <span className="pack-flag">Best value</span>}
-                <h3>{p.name}</h3>
-                <p className="pack-tag">{p.bestFor}</p>
-                <p className="pack-price">
-                  <strong>{p.price}</strong> <span>{p.unit}</span>
-                </p>
-                <p className="pack-per">
-                  {p.perVideo}
-                  {p.saving && <em>{p.saving}</em>}
-                </p>
-                <ul>
-                  {p.includes.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-                <a className="btn btn-primary" href={mailto(`UGC: ${p.name}`, briefTemplate)}>
-                  Ask about this
-                </a>
-              </Reveal>
-            ))}
+            {packs.map((base, i) => {
+              const discounted = founding && !!base.founding
+              const p = discounted ? { ...base, ...base.founding } : base
+              return (
+                <Reveal as="article" className="pack" delay={i * 130} data-featured={p.featured ? 'true' : undefined} key={p.name}>
+                  {p.featured && <span className="pack-flag">Best value</span>}
+                  <h3>{p.name}</h3>
+                  <p className="pack-tag">{p.bestFor}</p>
+                  <p className="pack-price">
+                    {discounted && <s aria-label={`Regular price ${base.price}`}>{base.price}</s>}
+                    <strong>{p.price}</strong> <span>{p.unit}</span>
+                  </p>
+                  {discounted && (
+                    <p className="pack-founding">
+                      Founding client rate, {foundingSpots} {foundingSpots === 1 ? 'spot' : 'spots'} left
+                    </p>
+                  )}
+                  <p className="pack-per">
+                    {p.perVideo}
+                    {p.saving && <em>{p.saving}</em>}
+                  </p>
+                  {p.note && <p className="pack-note">{p.note}</p>}
+                  <ul>
+                    {p.includes.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                  <a className="btn btn-primary" href={mailto(`UGC: ${p.name}`, briefTemplate)}>
+                    Ask about this
+                  </a>
+                </Reveal>
+              )
+            })}
           </div>
+
+          {founding && (
+            <Reveal as="p" className="fine founding-note">
+              I’m taking my first {foundingSpots} projects at a lower price. In return I ask for a short testimonial
+              and permission to show the work here.
+            </Reveal>
+          )}
 
           <Reveal className="addons">
             <h3>Add-ons</h3>
@@ -217,7 +272,7 @@ function App() {
         <div className="wrap split">
           <Reveal className="split-intro">
             <h2>How it works</h2>
-            <p>Four steps, and you see the idea before I film it.</p>
+            <p>Five steps, and you see the idea before I film anything.</p>
           </Reveal>
           <ol className="steps">
             {steps.map((st, i) => (

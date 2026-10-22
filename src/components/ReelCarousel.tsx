@@ -3,17 +3,28 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { reels } from '../content'
 import PlayableCard from './PlayableCard'
 
-type Props = { playing: string | null; onPlay: (id: string | null) => void }
+type Props = {
+  playing: string | null
+  onPlay: (id: string | null) => void
+  onEnded: (id: string) => string | null
+  muted: boolean
+  onToggleSound: () => void
+}
 
 const clamp = (n: number, min: number, max: number) => Math.min(max, Math.max(min, n))
 
-export default function ReelCarousel({ playing, onPlay }: Props) {
+export default function ReelCarousel({ playing, onPlay, onEnded, muted, onToggleSound }: Props) {
   const root = useRef<HTMLDivElement>(null)
   const scroller = useRef<HTMLDivElement>(null)
   const bar = useRef<HTMLSpanElement>(null)
   const raf = useRef(0)
   const drag = useRef({ on: false, x: 0, left: 0, moved: false })
   const [index, setIndex] = useState(0)
+  const started = useRef(false)
+  const playingRef = useRef(playing)
+  const onPlayRef = useRef(onPlay)
+  playingRef.current = playing
+  onPlayRef.current = onPlay
   const [edge, setEdge] = useState({ start: true, end: false })
 
   const stepSize = () => {
@@ -58,6 +69,42 @@ export default function ReelCarousel({ playing, onPlay }: Props) {
       cancelAnimationFrame(raf.current)
     }
   }, [update, schedule])
+
+  // Pornește singur primul video când caruselul e vizibil; îl oprește când pleci din secțiune.
+  useEffect(() => {
+    const el = root.current
+    if (!el || !('IntersectionObserver' in window)) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const first = reels.find((r) => r.video)
+    if (!first) return
+    const ids = reels.map((r) => r.id)
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.intersectionRatio >= 0.55 && !started.current && playingRef.current === null) {
+          started.current = true
+          onPlayRef.current(first.id)
+        } else if (entry.intersectionRatio < 0.1 && playingRef.current && ids.includes(playingRef.current)) {
+          onPlayRef.current(null)
+        }
+      },
+      { threshold: [0, 0.1, 0.55] },
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
+
+  // Când trece la următorul video, caruselul îl aduce în față.
+  useEffect(() => {
+    const el = scroller.current
+    if (!el || !playing) return
+    const card = el.querySelector<HTMLElement>(`[data-id="${playing}"]`)
+    if (!card) return
+    const box = el.getBoundingClientRect()
+    const r = card.getBoundingClientRect()
+    if (r.left < box.left - 1 || r.right > box.right + 1) {
+      el.scrollTo({ left: el.scrollLeft + (r.left - box.left), behavior: 'smooth' })
+    }
+  }, [playing])
 
   const go = (dir: 1 | -1) => scroller.current?.scrollBy({ left: dir * stepSize(), behavior: 'smooth' })
 
@@ -127,6 +174,9 @@ export default function ReelCarousel({ playing, onPlay }: Props) {
             item={reel}
             active={playing === reel.id}
             onToggle={() => onPlay(playing === reel.id ? null : reel.id)}
+            onEnded={() => onEnded(reel.id)}
+            muted={muted}
+            onToggleSound={onToggleSound}
           />
         ))}
       </div>

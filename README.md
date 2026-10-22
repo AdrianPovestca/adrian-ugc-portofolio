@@ -13,6 +13,22 @@ npm run dev
 
 Tot conținutul care se schimbă stă în `src/content.ts`: reels, pachete, add-ons, pași, email.
 
+## Videouri: cum le faci să meargă (3 pași)
+
+1. **Convertește** fiecare video (H.264, vertical 1080x1920, sub 25 MB) direct în `public/reels/`, cu numele din `src/content.ts`:
+   ```bash
+   npm run convert -- ~/Desktop/clipul-meu.mov error-line-180
+   ```
+   (Dacă lipsește ffmpeg: `brew install ffmpeg`.)
+2. **Activează** reel-ul: în `src/content.ts` scoți `//` din linia `video: '/reels/error-line-180.mp4'`.
+3. **Verifică** înainte de push:
+   ```bash
+   npm run check:videos
+   ```
+   Îți spune exact ce nu e în regulă: fișier lipsă, nume greșit, prea mare, HEVC în loc de H.264 sau video pe orizontală.
+
+Redarea pe site: primul video pornește singur (fără sunet) când ajungi la Reels, la final urmează următorul în ordine, iar la click pe alt video îl pornește pe acela și îl oprește pe cel dinainte. Sunetul se activează din butonul de pe card și rămâne pornit pentru videourile următoare.
+
 ### Cum adaugi un video (reels sau brand work)
 
 1. Exportă videoul **1080×1920, H.264, sub 25 MB** (limita Cloudflare Pages pe fișier). Comandă ffmpeg:

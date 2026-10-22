@@ -255,3 +255,11 @@ h2 { font-family: var(--display); font-weight: 800; font-size: clamp(34px, 4.6vw
 
 /* pachetele: apariția și hover-ul lucrează împreună */
 .js .pack.reveal { transition: opacity .8s var(--ease) var(--d, 0ms), transform .8s var(--ease) var(--d, 0ms), translate .35s var(--ease), border-color .3s, box-shadow .3s; }
+
+/* founding client rate */
+.pack-price s { display: block; color: var(--muted); font-size: 18px; text-decoration-thickness: 2px; margin-bottom: 2px; }
+.pack-founding { display: inline-block; margin-top: 10px; padding: 4px 10px; border-radius: 999px; background: #c9f36a1f; color: var(--cursor); font-size: 13px; font-weight: 600; }
+.pack-note { margin-top: 10px; font-size: 14px; line-height: 1.4; color: var(--wood); }
+.founding-note { margin-top: 40px; }
+
+.reel-failed { position: absolute; z-index: 3; left: 12px; right: 12px; top: 12px; padding: 6px 10px; border-radius: 8px; background: #000b; font-size: 13px; text-align: center; }

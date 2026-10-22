@@ -6,7 +6,6 @@
 export const site = {
   name: 'adrian.script',
   fullName: 'Adrian Povestca',
-  // VERIFICĂ: e scris exact cum l-ai trimis (adrianscriptpov). Dacă e greșeală de scriere, corectează aici.
   email: 'adrianscriptpov@gmail.com',
   instagram: 'https://www.instagram.com/adrian_script/',
   instagramReels: 'https://www.instagram.com/adrian_script/reels/',
@@ -33,10 +32,10 @@ export const reels: Reel[] = [
     id: 'error-line-180',
     title: 'Error in line 180',
     kind: 'Relatable coding',
-    views: '462K',
+    views: '500K+',
     note: 'The bug that ruins the whole afternoon. Everyone has one.',
     poster: '/posters/error-line-180.jpg',
-    video: '/reels/error-line-180.mp4',
+    // video: '/reels/error-line-180.mp4',
     // instagram: 'https://www.instagram.com/reel/...',
   },
   {
@@ -46,7 +45,7 @@ export const reels: Reel[] = [
     views: '239K',
     note: 'Dark room, green terminal, zero explanation. People tagged their parents.',
     poster: '/posters/what-my-mom-thinks.jpg',
-    video: '/reels/what-my-mom-thinks.mp4',
+    // video: '/reels/what-my-mom-thinks.mp4',
   },
   {
     id: 'staring-at-code',
@@ -55,7 +54,7 @@ export const reels: Reel[] = [
     views: '12.2K',
     note: 'The only thing scarier than a bug is code that works and you don’t know why.',
     poster: '/posters/staring-at-code.jpg',
-    video: '/reels/staring-at-code.mp4',
+    // video: '/reels/staring-at-code.mp4',
   },
 ]
 
@@ -74,7 +73,7 @@ export const brandWork = {
       title: 'Rituals that speak for themselves',
       note: 'A pour-over, start to finish.',
       poster: '/posters/artisan-rituals.jpg',
-      video: '/reels/artisan-rituals.mp4',
+      // video: '/reels/artisan-rituals.mp4',
       instagram: 'https://www.instagram.com/reel/DYKITMSTwki/',
     },
     {
@@ -82,7 +81,7 @@ export const brandWork = {
       title: 'Morning dial in',
       note: 'The first shots of the day, before the doors open.',
       poster: '/posters/artisan-morning-dial-in.jpg',
-      video: '/reels/artisan-morning-dial-in.mp4',
+      // video: '/reels/artisan-morning-dial-in.mp4',
       instagram: 'https://www.instagram.com/reel/DV72mrRDPjL/',
     },
     {
@@ -90,14 +89,14 @@ export const brandWork = {
       title: 'Bomber milk pitcher unboxing',
       note: 'A product unboxing shot at the counter.',
       poster: '/posters/artisan-bomber-unboxing.jpg',
-      video: '/reels/artisan-bomber-unboxing.mp4',
+      // video: '/reels/artisan-bomber-unboxing.mp4',
     },
     {
       id: 'artisan-oatly',
       title: 'Oatly pour',
       note: 'One carton, one close-up, one satisfying pour.',
       poster: '/posters/artisan-oatly.jpg',
-      video: '/reels/artisan-oatly.mp4',
+      // video: '/reels/artisan-oatly.mp4',
     },
   ] as { id: string; title: string; note: string; poster: string; video?: string; instagram?: string }[],
 }
@@ -121,7 +120,11 @@ export const formats = [
   },
 ]
 
-// ADJUST: prețurile sunt orientative (USD). Logica: pachetul de mijloc e cel mai ușor de spus „da".
+// ADJUST: prețurile sunt orientative (USD).
+// Preț „founding client": primii clienți plătesc mai puțin, în schimbare pentru un testimonial și permisiunea de a arăta proiectul.
+// Pune aici câte locuri chiar vrei să oferi. Când ajunge la 0, site-ul arată automat prețurile normale.
+export const foundingSpots: number = 3
+
 export type Pack = {
   name: string
   bestFor: string
@@ -129,7 +132,10 @@ export type Pack = {
   unit: string
   perVideo: string
   saving?: string
+  note?: string
   featured?: boolean
+  /** valorile care se schimbă cât timp există locuri founding */
+  founding?: { price: string; perVideo: string; saving?: string }
   includes: string[]
 }
 
@@ -140,8 +146,9 @@ export const packs: Pack[] = [
     price: '$240',
     unit: 'one video',
     perVideo: '$240 per video',
+    founding: { price: '$180', perVideo: '$180 per video' },
     includes: [
-      'Concept, hook and script',
+      'Concept, hook and talking points',
       '1 vertical video (9:16), up to 30 seconds',
       'Filmed, edited and captioned',
       '1 round of revisions',
@@ -156,30 +163,31 @@ export const packs: Pack[] = [
     perVideo: '$197 per video',
     saving: 'Save $130 vs. three single videos',
     featured: true,
+    founding: { price: '$390', perVideo: '$130 per video', saving: 'Save $150 vs. three single videos' },
     includes: [
       '3 videos, three angles: relatable, demo with a face, cinematic POV',
       '2 extra hook variations to test',
-      'Paid ads rights for 30 days on one platform (a $216 add-on)',
-      'Short kickoff call so the brief is right',
+      'Paid ads rights for 30 days on one platform (normally a $216 add-on)',
+      'Short kickoff call so I get your product right',
       '1 round of revisions per video',
       'Filmed, edited and captioned',
     ],
   },
   {
     name: 'Monthly',
-    bestFor: 'Brands that run ads every week and need fresh creative.',
-    price: '$1,490',
-    unit: 'per month, eight videos',
-    perVideo: '$186 per video',
-    saving: 'Save $430 vs. eight single videos',
+    bestFor: 'Brands that want a steady flow of fresh creative.',
+    price: '$880',
+    unit: 'per month, four videos',
+    perVideo: '$220 per video',
+    saving: 'Save $80 vs. four single videos',
+    note: 'Opens after our first project together.',
     includes: [
-      '8 videos a month, mixed angles',
-      '4 hook variations a month',
+      '4 videos a month, mixed angles',
+      '2 hook variations a month',
       'Paid ads rights for 30 days on one platform',
       'Raw footage included',
-      'Kickoff call and a mid-month check-in',
+      'Monthly planning call and a mid-month check-in',
       '2 rounds of revisions per video',
-      'Priority spot in my calendar',
     ],
   },
 ]
@@ -193,8 +201,24 @@ export const addons = [
 ]
 
 export const steps = [
-  { title: 'You send a brief', text: 'The product, who it’s for, and what you want people to do. A link to the app is enough to start.' },
-  { title: 'I send concepts', text: 'A hook and a short script for each video. You pick, tweak or kill ideas before I film anything.' },
-  { title: 'I film and edit', text: 'Shot on camera, with screen recordings where the product needs to prove itself.' },
-  { title: 'You get the files', text: 'Ready to post or run as ads. First cut usually lands in 5 to 7 days.' },
+  {
+    title: 'Tell me about the product',
+    text: 'No brief needed. Send a link, or we hop on a 15-minute call. I’ll ask what I need: who it’s for, what people should do after watching, and what makes it different.',
+  },
+  {
+    title: 'I write the concepts',
+    text: 'You get 2 or 3 ideas, each with a hook, the moment people recognise, and talking points. You pick one, change it or drop it before I film anything.',
+  },
+  {
+    title: 'We agree the details and I start',
+    text: 'The number of videos, where you can use them (organic or ads), revisions and price are confirmed in writing. A 30% deposit starts the work, and I begin as soon as I have access to the product.',
+  },
+  {
+    title: 'I film and edit',
+    text: 'Shot on camera, with screen recordings where the product needs to prove itself. The first cut usually lands in 5 to 7 days from the day I have the product and the approved concept.',
+  },
+  {
+    title: 'You review, then get the files',
+    text: 'You send your feedback in one batch and I apply it. Your package’s revision rounds are included. The balance is due when you approve the final cut, and the files arrive right after, ready to post or run as ads.',
+  },
 ]

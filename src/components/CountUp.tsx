@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 /** Numărul urcă de la 0 la valoare (ex: "462K"). Se oprește imediat dacă ai activat „reduce motion”. */
 export default function CountUp({ value, delay = 0, duration = 1500 }: { value: string; delay?: number; duration?: number }) {
-  const match = /^([\d.,]+)\s*([A-Za-z]*)$/.exec(value)
+  const match = /^([\d.,]+)\s*([A-Za-z]*\+?)$/.exec(value)
   const calm = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
   const target = match ? parseFloat(match[1].replace(/,/g, '')) : 0
   const decimals = match && match[1].includes('.') ? match[1].split('.')[1].length : 0

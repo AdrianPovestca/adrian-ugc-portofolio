@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Play, Volume2, VolumeX } from 'lucide-react'
 
 export type CardItem = {
@@ -18,15 +18,16 @@ type Props = {
   item: CardItem
   active: boolean
   onToggle: () => void
+  /** apelat când videoul se termină; returnează id-ul următorului video (sau null) */
+  onEnded?: () => string | null
+  muted: boolean
+  onToggleSound: () => void
   className?: string
 }
 
-export default function PlayableCard({ item, active, onToggle, className = '' }: Props) {
-  const [muted, setMuted] = useState(true)
-
-  useEffect(() => {
-    if (!active) setMuted(true)
-  }, [active])
+export default function PlayableCard({ item, active, onToggle, onEnded, muted, onToggleSound, className = '' }: Props) {
+  const [failed, setFailed] = useState(false)
+  const playable = !!item.video && !failed
 
   const poster = (
     <>
@@ -36,9 +37,9 @@ export default function PlayableCard({ item, active, onToggle, className = '' }:
   )
 
   return (
-    <article className={`reel ${className}`} data-active={active}>
+    <article className={`reel ${className}`} data-active={active} data-id={item.id}>
       <div className="reel-frame">
-        {item.video ? (
+        {playable ? (
           <>
             <button
               type="button"
@@ -49,13 +50,34 @@ export default function PlayableCard({ item, active, onToggle, className = '' }:
               {poster}
               {active && (
                 <video
+                  ref={(v) => {
+                    // iOS/Safari cer atributul „muted” în HTML ca să accepte pornirea automată
+                    if (v && muted) {
+                      v.defaultMuted = true
+                      v.muted = true
+                    }
+                  }}
                   src={item.video}
                   poster={item.poster}
                   autoPlay
-                  loop
                   playsInline
                   muted={muted}
-                  preload="metadata"
+                  preload="auto"
+                  onEnded={(e) => {
+                    const next = onEnded?.()
+                    // un singur video în listă: îl pornește de la capăt
+                    if (next === item.id) {
+                      e.currentTarget.currentTime = 0
+                      void e.currentTarget.play()
+                    }
+                  }}
+                  onError={() => {
+                    console.error(
+                      `[video] Nu pot încărca ${item.video}. Fișierul e în public/reels cu exact acest nume? Rulează: npm run check:videos`,
+                    )
+                    setFailed(true)
+                    if (active) onToggle()
+                  }}
                 />
               )}
               {!active && (
@@ -68,7 +90,7 @@ export default function PlayableCard({ item, active, onToggle, className = '' }:
               <button
                 type="button"
                 className="reel-sound"
-                onClick={() => setMuted((m) => !m)}
+                onClick={onToggleSound}
                 aria-label={muted ? 'Turn sound on' : 'Turn sound off'}
               >
                 {muted ? <VolumeX size={16} /> : <Volume2 size={16} />}
@@ -76,7 +98,10 @@ export default function PlayableCard({ item, active, onToggle, className = '' }:
             )}
           </>
         ) : (
-          <div className="reel-hit reel-static">{poster}</div>
+          <div className="reel-hit reel-static">
+            {poster}
+            {failed && <span className="reel-failed">Video unavailable</span>}
+          </div>
         )}
       </div>
       <div className="reel-meta">
