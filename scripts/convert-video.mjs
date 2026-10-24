@@ -3,14 +3,16 @@
 //            (al doilea argument = numele final, fără .mp4; apare în public/reels/)
 import { spawnSync } from 'node:child_process'
 import { mkdirSync, statSync } from 'node:fs'
+import { findFfmpeg, NO_FFMPEG_HELP } from './ffmpeg-path.mjs'
 
 const [input, name] = process.argv.slice(2)
 if (!input || !name) {
   console.log('Folosire: npm run convert -- calea/spre/video.mov nume-final')
   process.exit(1)
 }
-if (spawnSync('ffmpeg', ['-version']).error) {
-  console.log('ffmpeg nu e instalat. Pe Mac: brew install ffmpeg')
+const FFMPEG = await findFfmpeg()
+if (!FFMPEG) {
+  console.log(NO_FFMPEG_HELP)
   process.exit(1)
 }
 mkdirSync('public/reels', { recursive: true })
@@ -18,7 +20,7 @@ const out = `public/reels/${name}.mp4`
 
 function encode(crf) {
   return spawnSync(
-    'ffmpeg',
+    FFMPEG,
     [
       '-y', '-i', input,
       '-vf', 'scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2,format=yuv420p',

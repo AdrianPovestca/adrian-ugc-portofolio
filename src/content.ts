@@ -9,6 +9,13 @@ export const site = {
   email: 'adrianscriptpov@gmail.com',
   instagram: 'https://www.instagram.com/adrian_script/',
   instagramReels: 'https://www.instagram.com/adrian_script/reels/',
+  // Cheia publică de la Web3Forms (gratuit, 250 mesaje/lună). Cu ea, formularul trimite mesajele direct în inboxul tău.
+  // Cât timp e goală, formularul deschide Gmail cu mesajul deja scris. Pași în README.
+  formKey: 'a96cde44-902c-411e-80dc-851975405dbc',
+  // Poza din hero: pune fișierul în /public (ex: public/hero.jpg). Vertical, minim 900 px lățime, fără text pe ea.
+  heroPhoto: '/hero.jpg',
+  // 'photo' = poza ta; 'video' = primul reel (dacă are `video`), cu poza ca imagine de start
+  heroMedia: 'photo' as 'photo' | 'video',
 }
 
 export type Reel = {
@@ -35,7 +42,7 @@ export const reels: Reel[] = [
     views: '500K+',
     note: 'The bug that ruins the whole afternoon. Everyone has one.',
     poster: '/posters/error-line-180.jpg',
-    // video: '/reels/error-line-180.mp4',
+    video: '/reels/error-line-180.mp4',
     // instagram: 'https://www.instagram.com/reel/...',
   },
   {
@@ -45,7 +52,7 @@ export const reels: Reel[] = [
     views: '239K',
     note: 'Dark room, green terminal, zero explanation. People tagged their parents.',
     poster: '/posters/what-my-mom-thinks.jpg',
-    // video: '/reels/what-my-mom-thinks.mp4',
+    video: '/reels/what-my-mom-thinks.mp4',
   },
   {
     id: 'staring-at-code',
@@ -54,7 +61,7 @@ export const reels: Reel[] = [
     views: '12.2K',
     note: 'The only thing scarier than a bug is code that works and you don’t know why.',
     poster: '/posters/staring-at-code.jpg',
-    // video: '/reels/staring-at-code.mp4',
+    video: '/reels/staring-at-code.mp4',
   },
 ]
 
@@ -73,7 +80,7 @@ export const brandWork = {
       title: 'Rituals that speak for themselves',
       note: 'A pour-over, start to finish.',
       poster: '/posters/artisan-rituals.jpg',
-      // video: '/reels/artisan-rituals.mp4',
+      video: '/reels/artisan-rituals.mp4',
       instagram: 'https://www.instagram.com/reel/DYKITMSTwki/',
     },
     {
@@ -81,7 +88,7 @@ export const brandWork = {
       title: 'Morning dial in',
       note: 'The first shots of the day, before the doors open.',
       poster: '/posters/artisan-morning-dial-in.jpg',
-      // video: '/reels/artisan-morning-dial-in.mp4',
+      video: '/reels/artisan-morning-dial-in.mp4',
       instagram: 'https://www.instagram.com/reel/DV72mrRDPjL/',
     },
     {
@@ -89,14 +96,14 @@ export const brandWork = {
       title: 'Bomber milk pitcher unboxing',
       note: 'A product unboxing shot at the counter.',
       poster: '/posters/artisan-bomber-unboxing.jpg',
-      // video: '/reels/artisan-bomber-unboxing.mp4',
+      video: '/reels/artisan-bomber-unboxing.mp4',
     },
     {
       id: 'artisan-oatly',
       title: 'Oatly pour',
       note: 'One carton, one close-up, one satisfying pour.',
       poster: '/posters/artisan-oatly.jpg',
-      // video: '/reels/artisan-oatly.mp4',
+      video: '/reels/artisan-oatly.mp4',
     },
   ] as { id: string; title: string; note: string; poster: string; video?: string; instagram?: string }[],
 }

@@ -13,14 +13,32 @@ const ok = (m) => console.log(`  ✅ ${m}`)
 const bad = (m) => { problems++; console.log(`  ❌ ${m}`) }
 
 function probe(file) {
+  if (!process.env.NO_FFPROBE) {
+    try {
+      const out = execFileSync(
+        'ffprobe',
+        ['-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=codec_name,width,height', '-of', 'csv=p=0', file],
+        { encoding: 'utf8' },
+      ).trim()
+      const [codec, w, h] = out.split(',')
+      return { codec, w: +w, h: +h }
+    } catch {
+      /* ffprobe lipsește, încerc Spotlight (macOS) */
+    }
+  }
   try {
-    const out = execFileSync(
-      'ffprobe',
-      ['-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=codec_name,width,height', '-of', 'csv=p=0', file],
-      { encoding: 'utf8' },
-    ).trim()
-    const [codec, w, h] = out.split(',')
-    return { codec, w: +w, h: +h }
+    const out = execFileSync('mdls', ['-name', 'kMDItemCodecs', '-name', 'kMDItemPixelWidth', '-name', 'kMDItemPixelHeight', file], {
+      encoding: 'utf8',
+    })
+    const w = +(/kMDItemPixelWidth\s*=\s*(\d+)/.exec(out)?.[1] ?? 0)
+    const h = +(/kMDItemPixelHeight\s*=\s*(\d+)/.exec(out)?.[1] ?? 0)
+    const codecs = /kMDItemCodecs\s*=\s*\(([\s\S]*?)\)/.exec(out)?.[1] ?? ''
+    let codec = null
+    if (/h\.?264|avc/i.test(codecs)) codec = 'h264'
+    else if (/hevc|h\.?265/i.test(codecs)) codec = 'hevc'
+    else if (codecs.trim()) codec = codecs.replace(/[\s"]+/g, ' ').trim().split(',')[0]
+    if (!codec) return null
+    return { codec, w, h }
   } catch {
     return null
   }
@@ -38,10 +56,10 @@ for (const url of active) {
   if (mb > MAX_MB) bad(`${url}: ${mb.toFixed(1)} MB, peste limita Cloudflare de ${MAX_MB} MB. Comprimă-l (npm run convert).`)
   else ok(`${url}: ${mb.toFixed(1)} MB`)
   const info = probe(file)
-  if (!info) console.log('     (ffprobe nu e instalat, nu pot verifica formatul. Opțional: brew install ffmpeg)')
+  if (!info) console.log('     (nu pot citi formatul acestui fișier; deschide-l în QuickTime ca să vezi dacă merge)')
   else if (info.codec !== 'h264') bad(`${url}: codec ${info.codec}. Browserele nu redau sigur asta. Rulează: npm run convert`)
-  else if (info.w > info.h) bad(`${url}: e pe orizontală (${info.w}x${info.h}). Site-ul așteaptă video vertical 9:16.`)
-  else ok(`${url}: H.264, ${info.w}x${info.h}`)
+  else if (info.w && info.h && info.w > info.h) bad(`${url}: e pe orizontală (${info.w}x${info.h}). Site-ul așteaptă video vertical 9:16.`)
+  else ok(`${url}: H.264${info.w ? `, ${info.w}x${info.h}` : ''}`)
 }
 
 console.log('\nFișiere care așteaptă să fie activate (linia are //):')

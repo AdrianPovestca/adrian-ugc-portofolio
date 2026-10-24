@@ -13,13 +13,41 @@ npm run dev
 
 Tot conținutul care se schimbă stă în `src/content.ts`: reels, pachete, add-ons, pași, email.
 
-## Videouri: cum le faci să meargă (3 pași)
+## Formularul de contact (butoanele „Ask about this" și „Send me a message")
+
+Butoanele deschid o fereastră cu formular (nume, email, produs/link, pachet, mesaj).
+
+- **Fără cheie** (cum e acum): la „Open in my email" se deschide Gmail (pe telefon, aplicația de mail) cu adresa ta și mesajul deja scris. Vizitatorul apasă doar Send.
+- **Cu cheie Web3Forms** (recomandat): mesajul ajunge direct în inboxul tău, fără ca vizitatorul să aibă Gmail.
+  1. Intră pe web3forms.com, scrie `adrianscriptpov@gmail.com`, primești pe email o „Access Key".
+  2. Pune-o în `src/content.ts`, la `site.formKey: 'cheia-ta'`. Cheia e publică prin design, nu e un secret.
+  3. `git add .`, `git commit`, `git push`. Trimite-ți un mesaj de test de pe site.
+  Planul gratuit are 250 mesaje pe lună.
+
+## Poza din hero
+
+Pune poza ta în `public/hero.jpg` (vertical, minim 900 px lățime, fără text pe ea) și ai terminat. Calea se schimbă în `site.heroPhoto`. Pentru video în loc de poză: `site.heroMedia: 'video'` (folosește primul reel, dacă are `video`).
+
+## Cel mai rapid: toate videourile cu o singură comandă
+
+1. Pune toate videourile într-un folder (ex: Desktop/videouri) și dă-le numele reel-urilor:
+   `error-line-180`, `what-my-mom-thinks`, `staring-at-code`, `artisan-rituals`, `artisan-morning-dial-in`, `artisan-bomber-unboxing`, `artisan-oatly` (extensia nu contează; majusculele și spațiile nu contează).
+2. Rulează:
+   ```bash
+   npm run videos -- ~/Desktop/videouri
+   ```
+   Convertește fiecare video în formatul potrivit, îl pune în `public/reels/`, îl activează în `src/content.ts` și verifică totul. La final îți spune ce fișiere n-a recunoscut și ce mai lipsește.
+3. `npm run dev`, apeși play ca să testezi, apoi `git add .`, `git commit`, `git push`.
+
+Nu ai nevoie de Homebrew: ffmpeg vine cu `npm install` (pachetul `ffmpeg-static`). Dacă tot lipsește: `node node_modules/ffmpeg-static/install.js`.
+
+## Videouri: pas cu pas, unul câte unul (3 pași)
 
 1. **Convertește** fiecare video (H.264, vertical 1080x1920, sub 25 MB) direct în `public/reels/`, cu numele din `src/content.ts`:
    ```bash
    npm run convert -- ~/Desktop/clipul-meu.mov error-line-180
    ```
-   (Dacă lipsește ffmpeg: `brew install ffmpeg`.)
+   (Nu ai nevoie de Homebrew: ffmpeg vine cu `npm install` (pachetul `ffmpeg-static`). Dacă tot lipsește: `node node_modules/ffmpeg-static/install.js`.)
 2. **Activează** reel-ul: în `src/content.ts` scoți `//` din linia `video: '/reels/error-line-180.mp4'`.
 3. **Verifică** înainte de push:
    ```bash

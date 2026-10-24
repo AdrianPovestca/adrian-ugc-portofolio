@@ -1,25 +1,15 @@
 import { useState } from 'react'
-import { ArrowDown, Mail } from 'lucide-react'
+import { ArrowDown, Copy, Mail } from 'lucide-react'
+import ContactDialog from './components/ContactDialog'
 import CountUp from './components/CountUp'
 import PlayableCard from './components/PlayableCard'
 import ReelCarousel from './components/ReelCarousel'
 import Reveal from './components/Reveal'
 import { addons, brandWork, formats, foundingSpots, packs, reels, site, steps } from './content'
+import { copyText, emailLink } from './contact'
 import { useActiveSection, useScrolled } from './hooks'
 
 const SECTION_IDS = ['top', 'reels', 'brand-work', 'formats', 'packages', 'process', 'about', 'contact']
-
-const mailto = (subject: string, body = '') =>
-  `mailto:${site.email}?subject=${encodeURIComponent(subject)}${body ? `&body=${encodeURIComponent(body)}` : ''}`
-
-const briefTemplate = `Hi Adrian,
-
-Product / link:
-Who it's for:
-What we want people to do:
-Rough deadline:
-
-`
 
 function InstagramIcon() {
   return (
@@ -34,6 +24,15 @@ function InstagramIcon() {
 function App() {
   const [playing, setPlaying] = useState<string | null>(null)
   const [soundOn, setSoundOn] = useState(false)
+  const [ask, setAsk] = useState({ open: false, pack: '' })
+  const [copied, setCopied] = useState(false)
+  const openAsk = (pack = '') => setAsk({ open: true, pack })
+  const copyEmail = async () => {
+    if (await copyText(site.email)) {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1800)
+    }
+  }
 
   // La finalul unui video pornește următorul din aceeași secțiune; după ultimul, o ia de la început.
   const advance = (id: string): string | null => {
@@ -100,7 +99,7 @@ function App() {
 
         <div className="hero-visual">
           <div className="phone">
-            {hero.video ? (
+            {site.heroMedia === 'video' && hero.video ? (
               <video
                 ref={(v) => {
                   if (v) {
@@ -109,14 +108,14 @@ function App() {
                   }
                 }}
                 src={hero.video}
-                poster={hero.poster}
+                poster={site.heroPhoto}
                 autoPlay
                 muted
                 loop
                 playsInline
               />
             ) : (
-              <img src={hero.poster} alt="Adrian in the video “Error in line 180”" />
+              <img src={site.heroPhoto} alt="Adrian, the creator behind adrian.script" />
             )}
           </div>
           <div className="hero-chip">
@@ -235,9 +234,9 @@ function App() {
                       <li key={item}>{item}</li>
                     ))}
                   </ul>
-                  <a className="btn btn-primary" href={mailto(`UGC: ${p.name}`, briefTemplate)}>
+                  <button type="button" className="btn btn-primary" onClick={() => openAsk(p.name)}>
                     Ask about this
-                  </a>
+                  </button>
                 </Reveal>
               )
             })}
@@ -308,13 +307,24 @@ function App() {
         <div className="wrap">
           <Reveal as="h2">Got a product that deserves a better video than an ad?</Reveal>
           <Reveal as="p" delay={120}>Send me the link and a sentence about who it’s for. I’ll reply with a couple of ideas.</Reveal>
-          <Reveal delay={240}>
-            <a className="btn btn-primary btn-big" href={mailto('UGC project', briefTemplate)}>
-              <Mail size={18} /> {site.email}
+          <Reveal delay={240} className="contact-actions">
+            <button type="button" className="btn btn-primary btn-big" onClick={() => openAsk()}>
+              <Mail size={18} /> Send me a message
+            </button>
+            <a className="btn btn-ghost btn-big" href={emailLink('UGC enquiry')} target="_blank" rel="noreferrer">
+              Open in Gmail
             </a>
+          </Reveal>
+          <Reveal as="p" className="contact-mail" delay={320}>
+            Or write to <strong>{site.email}</strong>{' '}
+            <button type="button" className="copy-btn" onClick={copyEmail}>
+              <Copy size={14} /> {copied ? 'Copied' : 'Copy'}
+            </button>
           </Reveal>
         </div>
       </section>
+
+      <ContactDialog open={ask.open} pack={ask.pack} onClose={() => setAsk((s) => ({ ...s, open: false }))} />
 
       <footer className="footer">
         <div className="wrap footer-inner">

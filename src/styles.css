@@ -263,3 +263,46 @@ h2 { font-family: var(--display); font-weight: 800; font-size: clamp(34px, 4.6vw
 .founding-note { margin-top: 40px; }
 
 .reel-failed { position: absolute; z-index: 3; left: 12px; right: 12px; top: 12px; padding: 6px 10px; border-radius: 8px; background: #000b; font-size: 13px; text-align: center; }
+
+/* ───────────── Contact: dialog + butoane ───────────── */
+.btn-ghost { background: transparent; color: #121410; box-shadow: inset 0 0 0 2px #121410; }
+.btn-ghost:hover { background: #121410; color: var(--cursor); }
+.contact-actions { display: flex; flex-wrap: wrap; gap: 14px; }
+.contact-mail { margin-top: 26px; font-size: 16px; }
+.contact .contact-mail { margin-bottom: 0; }
+.copy-btn { display: inline-flex; align-items: center; gap: 6px; margin-left: 6px; padding: 5px 10px; border-radius: 999px; border: 1.5px solid #121410; background: transparent; color: #121410; font-size: 13px; font-weight: 600; }
+.copy-btn:hover { background: #121410; color: var(--cursor); }
+button.btn { cursor: pointer; font-family: inherit; }
+
+.contact-dialog { width: min(560px, calc(100% - 28px)); max-height: calc(100dvh - 28px); padding: 0; border: 1px solid var(--line); border-radius: 22px; background: var(--night-2); color: var(--text); box-shadow: 0 40px 120px #000b; overflow: auto; }
+.contact-dialog::backdrop { background: #0a0a0dcc; backdrop-filter: blur(6px); }
+.contact-dialog[open] { animation: dialog-in .4s var(--ease); }
+.contact-dialog[open]::backdrop { animation: fade-in .3s ease; }
+@keyframes dialog-in { from { opacity: 0; transform: translateY(24px) scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+.contact-body { position: relative; padding: 34px 32px 28px; }
+.contact-close { position: absolute; top: 14px; right: 14px; width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--line); background: transparent; }
+.contact-close:hover { background: var(--text); color: var(--night); }
+.contact-body h2 { font-size: clamp(26px, 5vw, 34px); margin-bottom: 8px; padding-right: 36px; }
+.contact-lead { color: var(--muted); line-height: 1.5; margin-bottom: 22px; }
+.contact-form { display: grid; gap: 14px; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.contact-form label { display: grid; gap: 6px; font-size: 13px; font-weight: 600; color: #c9c5bb; }
+.optional { color: var(--muted); font-weight: 500; margin-left: 4px; }
+.contact-form input, .contact-form select, .contact-form textarea { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--night); color: var(--text); font: inherit; font-size: 15px; font-weight: 400; transition: border-color .2s, box-shadow .2s; }
+.contact-form textarea { resize: vertical; min-height: 110px; line-height: 1.5; }
+.contact-form input::placeholder, .contact-form textarea::placeholder { color: #66645e; }
+.contact-form input:focus, .contact-form select:focus, .contact-form textarea:focus { outline: none; border-color: var(--cursor); box-shadow: 0 0 0 3px #c9f36a26; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.contact-submit { width: 100%; margin-top: 4px; }
+.contact-submit:disabled { opacity: .6; cursor: wait; }
+.contact-note { margin-top: 0; text-align: center; max-width: none; }
+.contact-error { color: #ff9b8f; font-size: 14px; }
+.contact-alt { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 18px; margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); }
+.contact-alt .btn-text { font-size: 14px; background: none; border-top: 0; border-left: 0; border-right: 0; color: var(--text); }
+.contact-done { padding: 14px 0 6px; }
+.contact-done p { color: #c9c5bb; line-height: 1.55; margin-bottom: 22px; }
+.contact-check { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: var(--cursor); color: #121410; margin-bottom: 18px; }
+.contact-row { display: flex; align-items: center; flex-wrap: wrap; gap: 14px 22px; }
+@media (max-width: 600px) { .field-row { grid-template-columns: 1fr; } .contact-body { padding: 28px 20px 22px; } }
+@media (prefers-reduced-motion: reduce) { .contact-dialog[open], .contact-dialog[open]::backdrop { animation: none; } }
