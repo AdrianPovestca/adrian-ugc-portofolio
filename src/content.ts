@@ -56,10 +56,10 @@ export const reels: Reel[] = [
   },
   {
     id: 'staring-at-code',
-    title: 'Me staring at my code wondering why it actually works',
+    title: 'How did they program a programming language to program a program to program programs?',
     kind: 'Who knows the answer?',
-    views: '50K',
-    note: 'The only thing scarier than a bug is code that works and you don’t know why.',
+    views: '45K',
+    note: 'The question every developer asks at 2 AM and nobody can answer.',
     poster: '/posters/staring-at-code.jpg',
     video: '/reels/staring-at-code.mp4',
   },
