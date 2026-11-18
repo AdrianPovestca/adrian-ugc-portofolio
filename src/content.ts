@@ -49,7 +49,7 @@ export const reels: Reel[] = [
     id: 'what-my-mom-thinks',
     title: 'What my mom thinks I do',
     kind: 'POV skit',
-    views: '400K',
+    views: '400K+',
     note: 'Dark room, green terminal, zero explanation. People tagged their parents.',
     poster: '/posters/what-my-mom-thinks.jpg',
     video: '/reels/what-my-mom-thinks.mp4',
@@ -58,10 +58,10 @@ export const reels: Reel[] = [
     id: 'staring-at-code',
     title: 'How did they program a programming language to program a program to program programs?',
     kind: 'Who knows the answer?',
-    views: '45K',
+    views: '50K+',
     note: 'The question every developer asks at 2 AM and nobody can answer.',
     poster: '/posters/staring-at-code.jpg',
-    video: '/reels/staring-at-code.mp4',
+    video: '/reels/program-programs.mp4',,
   },
 ]
 
