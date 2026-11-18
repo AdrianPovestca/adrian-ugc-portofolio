@@ -61,7 +61,7 @@ export const reels: Reel[] = [
     views: '50K+',
     note: 'The question every developer asks at 2 AM and nobody can answer.',
     poster: '/posters/staring-at-code.jpg',
-    video: '/reels/program-programs.mp4',,
+    video: '/reels/program-programs.mp4',
   },
 ]
 
