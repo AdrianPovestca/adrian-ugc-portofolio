@@ -58,7 +58,7 @@ export const reels: Reel[] = [
     id: 'staring-at-code',
     title: 'How did they program a programming language to program a program to program programs?',
     kind: 'Who knows the answer?',
-    views: '50K+',
+    views: '100K+',
     note: 'The question every developer asks at 2 AM and nobody can answer.',
     poster: '/posters/staring-at-code.jpg',
     video: '/reels/program-programs.mp4',
