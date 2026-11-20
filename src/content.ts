@@ -49,7 +49,7 @@ export const reels: Reel[] = [
     id: 'what-my-mom-thinks',
     title: 'What my mom thinks I do',
     kind: 'POV skit',
-    views: '400K+',
+    views: '350K+',
     note: 'Dark room, green terminal, zero explanation. People tagged their parents.',
     poster: '/posters/what-my-mom-thinks.jpg',
     video: '/reels/what-my-mom-thinks.mp4',
